@@ -1,12 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
+       <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
     <br>
+
 {% for p in peeps %}
 
-    <center><h2><mark>Name : {{ p.name }}</mark></h2></center>
+<center><div class="card col-sm-4" id="card{{ p.id }}">
+
    <center><img src="{{ p.url }}" alt="Italian Trulli" style="width:300px;height:400px;"></center>
+    <center><h2><mark>Name : {{ p.name }}</mark></h2></center>
     <center><h2>Status : {{ p.status }}</h2></center>
+</div></center>
 
 {% endfor %}
+        <script>
+        </script>
 {% endblock %}
