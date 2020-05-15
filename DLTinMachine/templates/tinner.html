@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br>
+{% for p in peeps %}
+
+    <center><h2><mark>Name : {{ p.name }}</mark></h2></center>
+   <center><img src="{{ p.url }}" alt="Italian Trulli" style="width:300px;height:400px;"></center>
+    <center><h2>Status : {{ p.status }}</h2></center>
+
+{% endfor %}
+{% endblock %}
