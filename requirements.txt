@@ -28,7 +28,8 @@ pandas==1.0.3
 Pillow==7.1.2
 plac==1.1.3
 preshed==3.0.2
-pynvx==1.0.0
+#Wasn't being used
+#pynvx==1.0.0
 pyparsing==2.4.7
 python-dateutil==2.8.1
 pytz==2020.1
