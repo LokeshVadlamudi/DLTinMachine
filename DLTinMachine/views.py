@@ -129,7 +129,7 @@ def default_view2(request):
         print(y)
         count += 1
         status = ''
-        if str(y) == 'whites':
+        if str(y) == 'likes':
             res = person.like()
             print("LIKE")
             print("Response: ", res)
