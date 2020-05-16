@@ -8,25 +8,21 @@ from fastai.tabular import *
 from torchvision.models import *
 from fastai.vision import *
 
+
 def default_view(request):
     return render(request, 'base.html')
 
 
-
-
-
 TINDER_URL = "https://api.gotinder.com"
 geolocator = Nominatim(user_agent="DLTinMachine")
-PROF_FILE = "/Users/lokesh/Desktop/DLTinMachine/profiles.txt"
+PROF_FILE = "profiles.txt"
+#PROF_FILE = "profiles.txt"
+
 
 class tinderAPI():
 
     def __init__(self, token):
         self._token = token
-
-    # def profile(self):
-    #     data = requests.get(TINDER_URL + "/v2/profile?include=account%2Cuser", headers={"X-Auth-Token": self._token}).json()
-    #     return Profile(data["data"], self)
 
     def matches(self, limit=10):
         data = requests.get(TINDER_URL + f"/v2/matches?count={limit}", headers={"X-Auth-Token": self._token}).json()
@@ -46,7 +42,9 @@ class tinderAPI():
     def nearby_persons(self):
         print('inside nearby')
         data = requests.get(TINDER_URL + "/v2/recs/core", headers={"X-Auth-Token": self._token}).json()
+        print(data)
         return list(map(lambda user: Person(user["user"], self), data["data"]["results"]))
+
 
 class Person(object):
 
@@ -66,16 +64,15 @@ class Person(object):
         self.images = list(map(lambda photo: photo["url"], data.get("photos", [])))
 
         self.jobs = list(
-            map(lambda job: {"title": job.get("title", {}).get("name"), "company": job.get("company", {}).get("name")}, data.get("jobs", [])))
+            map(lambda job: {"title": job.get("title", {}).get("name"), "company": job.get("company", {}).get("name")},
+                data.get("jobs", [])))
         self.schools = list(map(lambda school: school["name"], data.get("schools", [])))
 
         if data.get("pos", False):
             self.location = geolocator.reverse(f'{data["pos"]["lat"]}, {data["pos"]["lon"]}')
 
-
     def __repr__(self):
         return f"{self.id}  -  {self.name} ({self.birth_date.strftime('%d.%m.%Y')})"
-
 
     def like(self):
         return self._api.like(self.id)
@@ -86,7 +83,7 @@ class Person(object):
 
 token = "54e65bf8-c7b1-40a8-809f-de2fc727147e"
 api = tinderAPI(token)
-print(api,'inside main')
+print(api, 'inside main')
 
 
 def default_view2(request):
@@ -100,16 +97,22 @@ def default_view2(request):
         print("Name: ", person.name)
         print("Schools: ", person.schools)
         image_url = person.images[0]
+        print(os.getcwd())
         req = requests.get(image_url, stream=True)
-        folder = "/Users/lokesh/Desktop/DLTinMachine/images"
+        folder = "images"
+
+        # create folder if not exists
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         name = person.name
         # school = person.schools
         if req.status_code == 200:
             with open(f"{folder}/{name}.jpeg", "wb") as f:
                 f.write(req.content)
 
-
         sz = 1500
+
         def imageToTensorImage(path):
             bgr_img = cv2.imread(path)
             b, g, r = cv2.split(bgr_img)
@@ -118,9 +121,8 @@ def default_view2(request):
             rgb_img = rgb_img[(H - sz) // 2:(sz + (H - sz) // 2), (H - sz) // 2:(sz + (H - sz) // 2), :] / 256
             return vision.Image(px=pil2tensor(rgb_img, np.float32))
 
-
-        learn = load_learner('/Users/lokesh/Desktop/DLTinMachine/DLTinMachine/')
-        img = imageToTensorImage('/Users/lokesh/Desktop/DLTinMachine/images/'+name+'.jpeg')
+        learn = load_learner('DLTinMachine/')
+        img = imageToTensorImage('images/' + name + '.jpeg')
 
         # predict and visualize
         y = learn.predict(img)[0]
@@ -137,11 +139,11 @@ def default_view2(request):
             print("DISLIKE")
             print("Response: ", res)
             status = 'DISLIKE'
-        peeps.append({'name': name, 'url': image_url, 'status':status})
+        peeps.append({'name': name, 'url': image_url, 'status': status})
         if count == 3:
             break
 
     context = {
         'peeps': peeps,
     }
-    return render(request, 'tinner.html',context)
+    return render(request, 'tinner.html', context)
