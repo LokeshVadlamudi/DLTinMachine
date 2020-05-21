@@ -81,7 +81,7 @@ class Person(object):
         return self._api.dislike(self.id)
 
 
-token = "54e65bf8-c7b1-40a8-809f-de2fc727147e"
+token = "b51958b0-0f84-48df-bd28-d5519f57715e"
 api = tinderAPI(token)
 print(api, 'inside main')
 
